@@ -21,13 +21,15 @@ it, simply add the following line to your Podfile:
 
     pod "ContactsManager"
 
-After this import ContactsManager: "#import "ContactsManager/KTSContactsManager.h"
+After this import ContactsManager: 
+```#import "ContactsManager/KTSContactsManager.h```
 
 ### Copying files into your project
 
 1. Drag and Drop ContactsManager folder into your project
 2. In "Choose options dialog" check "Copy items if needed" and select "Create Groups" option, then press finish Button.
-3. In the Class that you want get the device contacts, import ContactsManager: ```#import "ContactsManager/KTSContactsManager.h```
+3. In the Class that you want get the device contacts, import ContactsManager: 
+```#import "ContactsManager/KTSContactsManager.h```
 
 ## Usage
 
