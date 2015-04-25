@@ -9,10 +9,11 @@
 #import "ViewController.h"
 #import "ContactsManager/KTSContactsManager.h"
 
-@interface ViewController ()
+@interface ViewController () <KTSContactsManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSArray *tableData;
+@property (strong, nonatomic) KTSContactsManager *contactsManager;
 
 @end
 
@@ -21,12 +22,21 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.contactsManager = [KTSContactsManager sharedManager];
+    self.contactsManager.delegate = self;
+    
     [KTSContactsManager importContacts:^(NSArray *contacts)
     {
         self.tableData = contacts;
         [self.tableView reloadData];
         NSLog(@"contacts: %@",contacts);
     }];
+}
+
+-(void)addressBookDidChange
+{
+    NSLog(@"Address Book Change");
 }
 
 #pragma mark - TableView Methods

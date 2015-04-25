@@ -8,7 +8,37 @@
 
 #import "KTSContactsManager.h"
 
+@interface KTSContactsManager ()
+
+@property (nonatomic) ABAddressBookRef addressBook;
+
+@end
+
 @implementation KTSContactsManager
+
++ (instancetype)sharedManager
+{
+    static KTSContactsManager *shared = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[self alloc] init];
+    });
+    return shared;
+}
+
+-(instancetype)init
+{
+    self = [super init];
+    
+    if(self)
+    {
+        CFErrorRef *error = NULL;
+        self.addressBook = ABAddressBookCreateWithOptions(NULL, error);
+        [self startObserveAddressBook];
+    }
+    
+    return self;
+}
 
 + (void)importContacts:(void (^)(NSArray *))contactsHandler
 {
@@ -174,6 +204,24 @@
     
     ABAddressBookSave(addressBook, nil);
     removed(recordDeleted);
+}
+
+#pragma mark - Observers
+
+- (void)startObserveAddressBook
+{
+    ABAddressBookRegisterExternalChangeCallback(self.addressBook, addressBookExternalChange, (__bridge void *)(self));
+}
+
+#pragma mark - external change callback
+
+void addressBookExternalChange(ABAddressBookRef __unused addressBookRef, CFDictionaryRef __unused info, void *context)
+{
+    KTSContactsManager *manager = (__bridge KTSContactsManager *)(context);
+    if([manager.delegate respondsToSelector:@selector(addressBookDidChange)])
+    {
+        [manager.delegate addressBookDidChange];
+    }
 }
 
 @end
