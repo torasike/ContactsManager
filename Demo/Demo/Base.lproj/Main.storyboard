@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="82" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="jHf-t4-ePE">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="contactCell" rowHeight="82" id="cx2-UY-6FH">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cx2-UY-6FH" id="L3h-D3-DLr">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="contact_icon" translatesAutoresizingMaskIntoConstraints="NO" id="InX-t5-njh">
+                                                    <rect key="frame" x="8" y="12" width="62" height="57"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="62" id="kPm-eW-Jcr"/>
+                                                        <constraint firstAttribute="height" constant="57" id="lyp-7O-Ml5"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Andrew lean" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eGt-NE-ipn">
+                                                    <rect key="frame" x="78" y="20" width="514" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="753-783-3478" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hwz-Px-6xe">
+                                                    <rect key="frame" x="78" y="39" width="514" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Hwz-Px-6xe" firstAttribute="trailing" secondItem="eGt-NE-ipn" secondAttribute="trailing" id="DCC-tC-cFK"/>
+                                                <constraint firstItem="eGt-NE-ipn" firstAttribute="leading" secondItem="InX-t5-njh" secondAttribute="trailing" constant="8" id="dJ4-1m-QUH"/>
+                                                <constraint firstItem="Hwz-Px-6xe" firstAttribute="top" secondItem="eGt-NE-ipn" secondAttribute="bottom" constant="-2" id="e9K-uh-GQh"/>
+                                                <constraint firstItem="Hwz-Px-6xe" firstAttribute="leading" secondItem="eGt-NE-ipn" secondAttribute="leading" id="k1W-Ok-h4K"/>
+                                                <constraint firstItem="InX-t5-njh" firstAttribute="leading" secondItem="L3h-D3-DLr" secondAttribute="leadingMargin" id="mBX-7S-L9b"/>
+                                                <constraint firstAttribute="centerY" secondItem="InX-t5-njh" secondAttribute="centerY" id="oob-PV-JeI"/>
+                                                <constraint firstItem="eGt-NE-ipn" firstAttribute="bottom" secondItem="InX-t5-njh" secondAttribute="centerY" id="ywx-TE-V1z"/>
+                                                <constraint firstItem="eGt-NE-ipn" firstAttribute="trailing" secondItem="L3h-D3-DLr" secondAttribute="trailingMargin" id="zSg-zA-8vP"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="5IZ-Ub-JaH"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="hKu-x6-iST"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="jHf-t4-ePE" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="BTI-n4-lDv"/>
+                            <constraint firstAttribute="trailing" secondItem="jHf-t4-ePE" secondAttribute="trailing" id="Ecb-LH-uAP"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="jHf-t4-ePE" secondAttribute="bottom" id="H80-ff-Yul"/>
+                            <constraint firstItem="jHf-t4-ePE" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="20" id="Ns9-mZ-snQ"/>
+                            <constraint firstItem="jHf-t4-ePE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="y5B-W8-EGK"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="Ns9-mZ-snQ"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="jHf-t4-ePE" id="3d5-CR-UrX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="contact_icon" width="128" height="128"/>
+    </resources>
+</document>

@@ -8,12 +8,12 @@ Choose ContactsManager for your next project, or migrate over your existing proj
 
 ## How To Get Started
 
-> Download ContactsManager and try out the included iPhone Demo
+* Download ContactsManager and try out the included iPhone Demo
 
 ## Installation
 
-> Using Cocoapods
-> Copying all the files into your project
+* Using Cocoapods
+* Copying all the files into your project
 
 ### CocoaPods:
 ContactsManager is available through [CocoaPods](http://cocoapods.org). To install
