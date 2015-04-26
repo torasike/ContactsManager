@@ -19,10 +19,10 @@ Choose ContactsManager for your next project, or migrate over your existing proj
 ContactsManager is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
-    pod "ContactsManager"
+    pod 'ContactsManager'
 
 After this import ContactsManager: 
-```#import "KTSContactsManager.h```
+```#import "KTSContactsManager.h"```
 
 ### Copying files into your project
 
