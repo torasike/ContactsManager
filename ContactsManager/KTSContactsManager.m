@@ -10,7 +10,7 @@
 
 @interface KTSContactsManager ()
 
-@property (nonatomic) ABAddressBookRef addressBook;
+@property (weak, nonatomic) ABAddressBookRef addressBook;
 
 @end
 
