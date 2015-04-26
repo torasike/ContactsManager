@@ -87,16 +87,49 @@
         person[@"id"] = [NSString stringWithFormat:@"%d", contactID];
         
         // FirstName
-        CFTypeRef firstNameCFObject = ABRecordCopyValue(record, kABPersonFirstNameProperty);
-        person[@"firstName"] = (firstNameCFObject != nil) ? (__bridge NSString *)firstNameCFObject : @"";
+        person[@"firstName"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
         
         // LastName
-        CFTypeRef lastNameCFObject = ABRecordCopyValue(record, kABPersonLastNameProperty);
-        person[@"lastName"] = (lastNameCFObject != nil) ? (__bridge NSString *)lastNameCFObject : @"";
+        person[@"lastName"] = [self stringProperty:kABPersonLastNameProperty fromContact:record];
         
-        // Company
-        CFTypeRef companyCFObject = ABRecordCopyValue(record, kABPersonOrganizationProperty);
-        person[@"company"] = (companyCFObject != nil) ? (__bridge NSString *)companyCFObject : @"";
+        // middleName
+        person[@"middleName"] = [self stringProperty:kABPersonMiddleNameProperty fromContact:record];
+        
+        // prefix
+        person[@"prefix"] = [self stringProperty:kABPersonPrefixProperty fromContact:record];
+        
+        // suffix
+        person[@"suffix"] = [self stringProperty:kABPersonSuffixProperty fromContact:record];
+        
+        // firstNamePhonetic
+        person[@"firstNamePhonetic"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
+        
+        // lastNamePhonetic
+        person[@"lastNamePhonetic"] = [self stringProperty:kABPersonLastNamePhoneticProperty fromContact:record];
+        
+        // nickName
+        person[@"nickName"] = [self stringProperty:kABPersonNicknameProperty fromContact:record];
+        
+        // company
+        person[@"company"] = [self stringProperty:kABPersonOrganizationProperty fromContact:record];
+        
+        // jobTitle
+        person[@"jobTitle"] = [self stringProperty:kABPersonJobTitleProperty fromContact:record];
+        
+        // department
+        person[@"department"] = [self stringProperty:kABPersonDepartmentProperty fromContact:record];
+        
+        // note
+        person[@"note"] = [self stringProperty:kABPersonNoteProperty fromContact:record];
+        
+        // createdAt
+        person[@"createdAt"] = [self dateProperty:kABPersonCreationDateProperty fromContact:record];
+        
+        // updatedAt
+        person[@"updatedAt"] = [self stringProperty:kABPersonModificationDateProperty fromContact:record];
+        
+        // BirthDay
+        person[@"birthday"] = [self stringProperty:kABPersonBirthdayProperty fromContact:record];
         
         // Phone(s)
         ABMultiValueRef phones = ABRecordCopyValue(record, kABPersonPhoneProperty);
@@ -128,10 +161,6 @@
         }
         person[@"emails"] = emailsArray;
         
-        // BirthDay
-        NSDate *birthday = (__bridge NSDate *)(ABRecordCopyValue(record, kABPersonBirthdayProperty));
-        person[@"birthday"] = (birthday != nil) ? birthday : @"";
-        
         BOOL add = YES;
         
         if([self.delegate respondsToSelector:@selector(filterToContact:)])
@@ -149,6 +178,18 @@
     [importedContacts sortUsingDescriptors:self.sortDescriptors];
     
     return importedContacts;
+}
+
+-(NSString *)stringProperty:(ABPropertyID)property fromContact:(ABRecordRef)person
+{
+    CFTypeRef companyCFObject = ABRecordCopyValue(person, property);
+    return (companyCFObject != nil) ? (__bridge NSString *)companyCFObject : @"";
+}
+
+-(NSDate *)dateProperty:(ABPropertyID)property fromContact:(ABRecordRef)person
+{
+    CFTypeRef companyCFObject = ABRecordCopyValue(person, property);
+    return (companyCFObject != nil) ? (__bridge NSDate *)companyCFObject : [NSDate dateWithTimeIntervalSince1970:1];
 }
 
 - (NSString *)getKeyFromLabel:(NSString *)label
