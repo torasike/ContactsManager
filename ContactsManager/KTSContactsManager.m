@@ -87,7 +87,7 @@
         person[@"id"] = [NSString stringWithFormat:@"%d", contactID];
         
         // FirstName
-        person[@"firstName"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
+        person[@"firstName"] = [self stringProperty:kABPersonFirstNameProperty fromContact:record];
         
         // LastName
         person[@"lastName"] = [self stringProperty:kABPersonLastNameProperty fromContact:record];
