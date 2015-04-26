@@ -25,6 +25,7 @@
     
     self.contactsManager = [KTSContactsManager sharedManager];
     self.contactsManager.delegate = self;
+    self.contactsManager.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES] ];
     
     [self.contactsManager importContacts:^(NSArray *contacts)
     {
