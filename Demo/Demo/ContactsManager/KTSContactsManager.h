@@ -20,6 +20,7 @@
 @interface KTSContactsManager : NSObject
 
 @property (weak, nonatomic) id<KTSContactsManagerDelegate> delegate;
+@property (strong, nonatomic) NSArray *sortDescriptors;
 
 + (instancetype)sharedManager;
 

@@ -35,6 +35,7 @@
         CFErrorRef *error = NULL;
         self.addressBook = ABAddressBookCreateWithOptions(NULL, error);
         [self startObserveAddressBook];
+        self.sortDescriptors = @[];
     }
     
     return self;
@@ -144,6 +145,8 @@
         }
         
     }];
+            
+    [importedContacts sortUsingDescriptors:self.sortDescriptors];
     
     return importedContacts;
 }
