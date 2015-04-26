@@ -26,7 +26,7 @@
     self.contactsManager = [KTSContactsManager sharedManager];
     self.contactsManager.delegate = self;
     
-    [KTSContactsManager importContacts:^(NSArray *contacts)
+    [self.contactsManager importContacts:^(NSArray *contacts)
     {
         self.tableData = contacts;
         [self.tableView reloadData];
@@ -37,6 +37,12 @@
 -(void)addressBookDidChange
 {
     NSLog(@"Address Book Change");
+}
+
+-(BOOL)filterToContact:(NSDictionary *)contact
+{
+    return YES;
+    return ![contact[@"company"] isEqualToString:@""];
 }
 
 #pragma mark - TableView Methods
