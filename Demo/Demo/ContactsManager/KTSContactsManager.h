@@ -13,6 +13,7 @@
 @protocol KTSContactsManagerDelegate <NSObject>
 
 -(void)addressBookDidChange;
+-(BOOL)filterToContact:(NSDictionary *)contact;
 
 @end
 
@@ -22,8 +23,8 @@
 
 + (instancetype)sharedManager;
 
-+ (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
-+ (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added;
-+ (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL wasRemoved))removed;
+- (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
+- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added;
+- (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL wasRemoved))removed;
 
 @end

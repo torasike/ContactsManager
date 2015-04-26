@@ -40,7 +40,7 @@
     return self;
 }
 
-+ (void)importContacts:(void (^)(NSArray *))contactsHandler
+- (void)importContacts:(void (^)(NSArray *))contactsHandler
 {
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied || ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusRestricted)
     {
@@ -73,7 +73,7 @@
     }
 }
 
-+ (NSMutableArray *)extractContactsInDictionary:(NSMutableArray *)contactsList
+- (NSMutableArray *)extractContactsInDictionary:(NSMutableArray *)contactsList
 {
     NSMutableArray *importedContacts = [[NSMutableArray alloc] init];
     
@@ -92,6 +92,10 @@
         // LastName
         CFTypeRef lastNameCFObject = ABRecordCopyValue(record, kABPersonLastNameProperty);
         person[@"lastName"] = (lastNameCFObject != nil) ? (__bridge NSString *)lastNameCFObject : @"";
+        
+        // Company
+        CFTypeRef companyCFObject = ABRecordCopyValue(record, kABPersonOrganizationProperty);
+        person[@"company"] = (companyCFObject != nil) ? (__bridge NSString *)companyCFObject : @"";
         
         // Phone(s)
         ABMultiValueRef phones = ABRecordCopyValue(record, kABPersonPhoneProperty);
@@ -127,13 +131,24 @@
         NSDate *birthday = (__bridge NSDate *)(ABRecordCopyValue(record, kABPersonBirthdayProperty));
         person[@"birthday"] = (birthday != nil) ? birthday : @"";
         
-        [importedContacts addObject:person];
+        BOOL add = YES;
+        
+        if([self.delegate respondsToSelector:@selector(filterToContact:)])
+        {
+            add = [self.delegate filterToContact:person];
+        }
+        
+        if(add)
+        {
+            [importedContacts addObject:person];
+        }
+        
     }];
     
     return importedContacts;
 }
 
-+ (NSString *)getKeyFromLabel:(NSString *)label
+- (NSString *)getKeyFromLabel:(NSString *)label
 {
     if (![label containsString:@"<"])
     {
@@ -145,7 +160,7 @@
     return clearText;
 }
 
-+ (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL))added
+- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL))added
 {
     CFErrorRef *error = nil;
     ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
@@ -182,7 +197,7 @@
     added(wasSaved);
 }
 
-+ (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL))removed
+- (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL))removed
 {
     CFErrorRef *error = nil;
     ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
