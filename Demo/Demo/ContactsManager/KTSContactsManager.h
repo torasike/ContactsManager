@@ -10,7 +10,17 @@
 #import <AddressBook/AddressBook.h>
 #import <UIKit/UIKit.h>
 
+@protocol KTSContactsManagerDelegate <NSObject>
+
+-(void)addressBookDidChange;
+
+@end
+
 @interface KTSContactsManager : NSObject
+
+@property (weak, nonatomic) id<KTSContactsManagerDelegate> delegate;
+
++ (instancetype)sharedManager;
 
 + (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
 + (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added;
