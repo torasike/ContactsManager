@@ -14,7 +14,7 @@
 		9EE7C9B51AEC21D800452436 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9EE7C9B41AEC21D800452436 /* Images.xcassets */; };
 		9EE7C9B81AEC21D800452436 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9EE7C9B61AEC21D800452436 /* LaunchScreen.xib */; };
 		9EE7C9C41AEC21D800452436 /* DemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EE7C9C31AEC21D800452436 /* DemoTests.m */; };
-		9EE7C9D41AEC353400452436 /* KTSContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EE7C9D31AEC353400452436 /* KTSContactsManager.m */; };
+		9F641CE91AEC8F990042AA59 /* KTSContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F641CE81AEC8F990042AA59 /* KTSContactsManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,8 +41,8 @@
 		9EE7C9BD1AEC21D800452436 /* DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EE7C9C21AEC21D800452436 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9EE7C9C31AEC21D800452436 /* DemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoTests.m; sourceTree = "<group>"; };
-		9EE7C9D21AEC353400452436 /* KTSContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTSContactsManager.h; sourceTree = "<group>"; };
-		9EE7C9D31AEC353400452436 /* KTSContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KTSContactsManager.m; sourceTree = "<group>"; };
+		9F641CE71AEC8F990042AA59 /* KTSContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KTSContactsManager.h; sourceTree = "<group>"; };
+		9F641CE81AEC8F990042AA59 /* KTSContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KTSContactsManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +84,7 @@
 		9EE7C9A61AEC21D800452436 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				9F641CE61AEC8F990042AA59 /* ContactsManager */,
 				9EE7C9AB1AEC21D800452436 /* AppDelegate.h */,
 				9EE7C9AC1AEC21D800452436 /* AppDelegate.m */,
 				9EE7C9AE1AEC21D800452436 /* ViewController.h */,
@@ -91,7 +92,6 @@
 				9EE7C9B11AEC21D800452436 /* Main.storyboard */,
 				9EE7C9B41AEC21D800452436 /* Images.xcassets */,
 				9EE7C9B61AEC21D800452436 /* LaunchScreen.xib */,
-				9EE7C9D11AEC353400452436 /* ContactsManager */,
 				9EE7C9A71AEC21D800452436 /* Supporting Files */,
 			);
 			path = Demo;
@@ -123,13 +123,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		9EE7C9D11AEC353400452436 /* ContactsManager */ = {
+		9F641CE61AEC8F990042AA59 /* ContactsManager */ = {
 			isa = PBXGroup;
 			children = (
-				9EE7C9D21AEC353400452436 /* KTSContactsManager.h */,
-				9EE7C9D31AEC353400452436 /* KTSContactsManager.m */,
+				9F641CE71AEC8F990042AA59 /* KTSContactsManager.h */,
+				9F641CE81AEC8F990042AA59 /* KTSContactsManager.m */,
 			);
-			path = ContactsManager;
+			name = ContactsManager;
+			path = ../../ContactsManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -235,7 +236,7 @@
 				9EE7C9B01AEC21D800452436 /* ViewController.m in Sources */,
 				9EE7C9AD1AEC21D800452436 /* AppDelegate.m in Sources */,
 				9EE7C9AA1AEC21D800452436 /* main.m in Sources */,
-				9EE7C9D41AEC353400452436 /* KTSContactsManager.m in Sources */,
+				9F641CE91AEC8F990042AA59 /* KTSContactsManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

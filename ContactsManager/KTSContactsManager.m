@@ -8,9 +8,40 @@
 
 #import "KTSContactsManager.h"
 
+@interface KTSContactsManager ()
+
+@property (nonatomic) ABAddressBookRef addressBook;
+
+@end
+
 @implementation KTSContactsManager
 
-+ (void)importContacts:(void (^)(NSArray *))contactsHandler
++ (instancetype)sharedManager
+{
+    static KTSContactsManager *shared = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [[self alloc] init];
+    });
+    return shared;
+}
+
+-(instancetype)init
+{
+    self = [super init];
+    
+    if(self)
+    {
+        CFErrorRef *error = NULL;
+        self.addressBook = ABAddressBookCreateWithOptions(NULL, error);
+        [self startObserveAddressBook];
+        self.sortDescriptors = @[];
+    }
+    
+    return self;
+}
+
+- (void)importContacts:(void (^)(NSArray *))contactsHandler
 {
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied || ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusRestricted)
     {
@@ -43,7 +74,7 @@
     }
 }
 
-+ (NSMutableArray *)extractContactsInDictionary:(NSMutableArray *)contactsList
+- (NSMutableArray *)extractContactsInDictionary:(NSMutableArray *)contactsList
 {
     NSMutableArray *importedContacts = [[NSMutableArray alloc] init];
     
@@ -56,12 +87,49 @@
         person[@"id"] = [NSString stringWithFormat:@"%d", contactID];
         
         // FirstName
-        CFTypeRef firstNameCFObject = ABRecordCopyValue(record, kABPersonFirstNameProperty);
-        person[@"firstName"] = (firstNameCFObject != nil) ? (__bridge NSString *)firstNameCFObject : @"";
+        person[@"firstName"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
         
         // LastName
-        CFTypeRef lastNameCFObject = ABRecordCopyValue(record, kABPersonLastNameProperty);
-        person[@"lastName"] = (lastNameCFObject != nil) ? (__bridge NSString *)lastNameCFObject : @"";
+        person[@"lastName"] = [self stringProperty:kABPersonLastNameProperty fromContact:record];
+        
+        // middleName
+        person[@"middleName"] = [self stringProperty:kABPersonMiddleNameProperty fromContact:record];
+        
+        // prefix
+        person[@"prefix"] = [self stringProperty:kABPersonPrefixProperty fromContact:record];
+        
+        // suffix
+        person[@"suffix"] = [self stringProperty:kABPersonSuffixProperty fromContact:record];
+        
+        // firstNamePhonetic
+        person[@"firstNamePhonetic"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
+        
+        // lastNamePhonetic
+        person[@"lastNamePhonetic"] = [self stringProperty:kABPersonLastNamePhoneticProperty fromContact:record];
+        
+        // nickName
+        person[@"nickName"] = [self stringProperty:kABPersonNicknameProperty fromContact:record];
+        
+        // company
+        person[@"company"] = [self stringProperty:kABPersonOrganizationProperty fromContact:record];
+        
+        // jobTitle
+        person[@"jobTitle"] = [self stringProperty:kABPersonJobTitleProperty fromContact:record];
+        
+        // department
+        person[@"department"] = [self stringProperty:kABPersonDepartmentProperty fromContact:record];
+        
+        // note
+        person[@"note"] = [self stringProperty:kABPersonNoteProperty fromContact:record];
+        
+        // createdAt
+        person[@"createdAt"] = [self dateProperty:kABPersonCreationDateProperty fromContact:record];
+        
+        // updatedAt
+        person[@"updatedAt"] = [self stringProperty:kABPersonModificationDateProperty fromContact:record];
+        
+        // BirthDay
+        person[@"birthday"] = [self stringProperty:kABPersonBirthdayProperty fromContact:record];
         
         // Phone(s)
         ABMultiValueRef phones = ABRecordCopyValue(record, kABPersonPhoneProperty);
@@ -93,17 +161,38 @@
         }
         person[@"emails"] = emailsArray;
         
-        // BirthDay
-        NSDate *birthday = (__bridge NSDate *)(ABRecordCopyValue(record, kABPersonBirthdayProperty));
-        person[@"birthday"] = (birthday != nil) ? birthday : @"";
+        BOOL add = YES;
         
-        [importedContacts addObject:person];
+        if([self.delegate respondsToSelector:@selector(filterToContact:)])
+        {
+            add = [self.delegate filterToContact:person];
+        }
+        
+        if(add)
+        {
+            [importedContacts addObject:person];
+        }
+        
     }];
+            
+    [importedContacts sortUsingDescriptors:self.sortDescriptors];
     
     return importedContacts;
 }
 
-+ (NSString *)getKeyFromLabel:(NSString *)label
+-(NSString *)stringProperty:(ABPropertyID)property fromContact:(ABRecordRef)person
+{
+    CFTypeRef companyCFObject = ABRecordCopyValue(person, property);
+    return (companyCFObject != nil) ? (__bridge NSString *)companyCFObject : @"";
+}
+
+-(NSDate *)dateProperty:(ABPropertyID)property fromContact:(ABRecordRef)person
+{
+    CFTypeRef companyCFObject = ABRecordCopyValue(person, property);
+    return (companyCFObject != nil) ? (__bridge NSDate *)companyCFObject : [NSDate dateWithTimeIntervalSince1970:1];
+}
+
+- (NSString *)getKeyFromLabel:(NSString *)label
 {
     if (![label containsString:@"<"])
     {
@@ -115,7 +204,7 @@
     return clearText;
 }
 
-+ (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL))added
+- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL))added
 {
     CFErrorRef *error = nil;
     ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
@@ -152,7 +241,7 @@
     added(wasSaved);
 }
 
-+ (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL))removed
+- (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL))removed
 {
     CFErrorRef *error = nil;
     ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
@@ -174,6 +263,24 @@
     
     ABAddressBookSave(addressBook, nil);
     removed(recordDeleted);
+}
+
+#pragma mark - Observers
+
+- (void)startObserveAddressBook
+{
+    ABAddressBookRegisterExternalChangeCallback(self.addressBook, addressBookExternalChange, (__bridge void *)(self));
+}
+
+#pragma mark - external change callback
+
+void addressBookExternalChange(ABAddressBookRef __unused addressBookRef, CFDictionaryRef __unused info, void *context)
+{
+    KTSContactsManager *manager = (__bridge KTSContactsManager *)(context);
+    if([manager.delegate respondsToSelector:@selector(addressBookDidChange)])
+    {
+        [manager.delegate addressBookDidChange];
+    }
 }
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "ContactsManager/KTSContactsManager.h"
+#import "KTSContactsManager.h"
 
 @interface ViewController () <KTSContactsManagerDelegate>
 

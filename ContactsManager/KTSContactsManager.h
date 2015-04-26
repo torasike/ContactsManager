@@ -10,10 +10,22 @@
 #import <AddressBook/AddressBook.h>
 #import <UIKit/UIKit.h>
 
+@protocol KTSContactsManagerDelegate <NSObject>
+
+-(void)addressBookDidChange;
+-(BOOL)filterToContact:(NSDictionary *)contact;
+
+@end
+
 @interface KTSContactsManager : NSObject
 
-+ (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
-+ (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added;
-+ (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL wasRemoved))removed;
+@property (weak, nonatomic) id<KTSContactsManagerDelegate> delegate;
+@property (strong, nonatomic) NSArray *sortDescriptors;
+
++ (instancetype)sharedManager;
+
+- (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
+- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added;
+- (void)removeContactById:(NSInteger)contactID completion:(void (^)(BOOL wasRemoved))removed;
 
 @end
