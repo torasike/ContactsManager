@@ -10,11 +10,13 @@
 
 @interface KTSContactsManager ()
 
+@property (assign, nonatomic) ABAddressBookRef addressBook;
+
 @end
 
 @implementation KTSContactsManager
 
-+ (id)sharedManager
++ (instancetype)sharedManager
 {
     static KTSContactsManager *shared = nil;
     static dispatch_once_t onceToken;
@@ -24,7 +26,7 @@
     return shared;
 }
 
--(id)init
+- (instancetype)init
 {
     self = [super init];
     

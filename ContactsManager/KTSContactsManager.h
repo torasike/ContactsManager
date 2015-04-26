@@ -19,11 +19,10 @@
 
 @interface KTSContactsManager : NSObject
 
-@property (assign, nonatomic) ABAddressBookRef addressBook;
 @property (strong, nonatomic) id<KTSContactsManagerDelegate> delegate;
 @property (strong, nonatomic) NSArray *sortDescriptors;
 
-+ (id)sharedManager;
++ (instancetype)sharedManager;
 
 - (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
 - (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added;
