@@ -2,8 +2,8 @@
 //  KTSContactsManager.h
 //  kontacts-objc
 //
-//  Created by Sebastián Gómez on 19/04/15.
-//  Copyright (c) 2015 Sebastián Gómez. All rights reserved.
+//  Created by Kekiiwaa on 19/04/15.
+//  Copyright (c) 2015 Kekiiwaa. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
