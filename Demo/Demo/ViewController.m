@@ -26,18 +26,23 @@
     self.contactsManager = [KTSContactsManager sharedManager];
     self.contactsManager.delegate = self;
     self.contactsManager.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"firstName" ascending:YES] ];
-    
+    [self loadData];
+}
+
+- (void)loadData
+{
     [self.contactsManager importContacts:^(NSArray *contacts)
-    {
-        self.tableData = contacts;
-        [self.tableView reloadData];
-        NSLog(@"contacts: %@",contacts);
-    }];
+     {
+         self.tableData = contacts;
+         [self.tableView reloadData];
+         NSLog(@"contacts: %@",contacts);
+     }];
 }
 
 -(void)addressBookDidChange
 {
     NSLog(@"Address Book Change");
+    [self loadData];
 }
 
 -(BOOL)filterToContact:(NSDictionary *)contact
@@ -46,15 +51,30 @@
     return ![contact[@"company"] isEqualToString:@""];
 }
 
+- (IBAction)addContact:(UIBarButtonItem *)sender
+{
+    [self.contactsManager addContactName:@"John"
+                                lastName:@"Smith"
+                                  phones:@[@{
+                                               @"value":@"+7-903-469-97-48",
+                                              @"label":@"Mobile"
+                                               }]
+                                  emails:@[@{
+                                               @"value":@"mail@mail.com",
+                                               @"label": @"home e-mail"
+                                               }]
+                                birthday:[NSDate dateWithTimeInterval:22 * 365 * 24 * 60 * 60 sinceDate:[NSDate date]]
+                                   image:[UIImage imageNamed:@"newContact"]
+                              completion:^(BOOL wasAdded) {
+                                  NSLog(@"Contact was %@ added",wasAdded ? @"" : @"NOT");
+                              }];
+}
+
 #pragma mark - TableView Methods
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"contactCell"];
-    if (cell == nil)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"contactCell"];
-    }
     
     NSDictionary *contact = [self.tableData objectAtIndex:indexPath.row];
     
@@ -69,7 +89,13 @@
         NSDictionary *phoneItem = phones[0];
         phoneNumber.text = phoneItem[@"value"];
     }
-
+    
+    UIImageView *cellIconView = (UIImageView *)[cell.contentView viewWithTag:888];
+    
+    cellIconView.image = contact[@"image"] ? : [UIImage imageNamed:@"contact_icon"];
+    cellIconView.contentScaleFactor = UIViewContentModeScaleAspectFill;
+    cellIconView.layer.cornerRadius = CGRectGetHeight(cellIconView.frame) / 2;
+    
     return cell;
 }
 
