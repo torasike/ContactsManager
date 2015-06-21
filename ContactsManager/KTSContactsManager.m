@@ -57,7 +57,7 @@
             if (granted)
             {
                 NSMutableArray *contactsList = [(__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook) mutableCopy];
-                contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList]]);
+                contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList extractOptions:KTSContactsManagerFieldAll]]);
             }
         });
         return;
@@ -68,12 +68,12 @@
         CFErrorRef *error = nil;
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
         NSMutableArray *contactsList = [(__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook) mutableCopy];
-        contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList]]);
+        contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList extractOptions:KTSContactsManagerFieldAll]]);
         return;
     }
 }
 
-- (NSMutableArray *)extractContactsInDictionary:(NSMutableArray *)contactsList
+- (NSMutableArray *)extractContactsInDictionary:(NSMutableArray *)contactsList extractOptions:(KTSContactsManagerField)fields
 {
     NSMutableArray *importedContacts = [[NSMutableArray alloc] init];
     
@@ -83,82 +83,126 @@
         
         // Contact ID
         ABRecordID contactID = ABRecordGetRecordID(record);
-        person[@"id"] = [NSString stringWithFormat:@"%d", contactID];
+        if (KTSContactsManagerFieldPersonID & fields){
+            person[@"id"] = [NSString stringWithFormat:@"%d", contactID];
+        }
         
         // FirstName
-        person[@"firstName"] = [self stringProperty:kABPersonFirstNameProperty fromContact:record];
+        if (KTSContactsManagerFieldFirstName & fields){
+            person[@"firstName"] = [self stringProperty:kABPersonFirstNameProperty fromContact:record];
+        }
         
         // LastName
-        person[@"lastName"] = [self stringProperty:kABPersonLastNameProperty fromContact:record];
+        if (KTSContactsManagerFieldLastName & fields){
+            person[@"lastName"] = [self stringProperty:kABPersonLastNameProperty fromContact:record];
+        }
         
         // middleName
-        person[@"middleName"] = [self stringProperty:kABPersonMiddleNameProperty fromContact:record];
+        if (KTSContactsManagerFieldMiddleName & fields){
+            person[@"middleName"] = [self stringProperty:kABPersonMiddleNameProperty fromContact:record];
+        }
         
         // prefix
-        person[@"prefix"] = [self stringProperty:kABPersonPrefixProperty fromContact:record];
+        if (KTSContactsManagerFieldPrefix & fields){
+            person[@"prefix"] = [self stringProperty:kABPersonPrefixProperty fromContact:record];
+        }
         
         // suffix
-        person[@"suffix"] = [self stringProperty:kABPersonSuffixProperty fromContact:record];
+        if (KTSContactsManagerFieldSuffix & fields){
+            person[@"suffix"] = [self stringProperty:kABPersonSuffixProperty fromContact:record];
+        }
         
         // firstNamePhonetic
-        person[@"firstNamePhonetic"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
+        if (KTSContactsManagerFieldFirstNamePhonetic){
+            person[@"firstNamePhonetic"] = [self stringProperty:kABPersonFirstNamePhoneticProperty fromContact:record];
+        }
         
         // lastNamePhonetic
-        person[@"lastNamePhonetic"] = [self stringProperty:kABPersonLastNamePhoneticProperty fromContact:record];
+        if (KTSContactsManagerFieldLastNamePhonetic & fields){
+            person[@"lastNamePhonetic"] = [self stringProperty:kABPersonLastNamePhoneticProperty fromContact:record];
+        }
         
         // nickName
-        person[@"nickName"] = [self stringProperty:kABPersonNicknameProperty fromContact:record];
+        if (KTSContactsManagerFieldNickName & fields){
+            person[@"nickName"] = [self stringProperty:kABPersonNicknameProperty fromContact:record];
+        }
         
         // company
-        person[@"company"] = [self stringProperty:kABPersonOrganizationProperty fromContact:record];
+        if (KTSContactsManagerFieldCompany & fields){
+            person[@"company"] = [self stringProperty:kABPersonOrganizationProperty fromContact:record];
+        }
         
         // jobTitle
-        person[@"jobTitle"] = [self stringProperty:kABPersonJobTitleProperty fromContact:record];
+        if (KTSContactsManagerFieldJobTitle & fields){
+            person[@"jobTitle"] = [self stringProperty:kABPersonJobTitleProperty fromContact:record];
+        }
         
         // department
-        person[@"department"] = [self stringProperty:kABPersonDepartmentProperty fromContact:record];
+        if (KTSContactsManagerFieldDepartment & fields){
+            person[@"department"] = [self stringProperty:kABPersonDepartmentProperty fromContact:record];
+        }
         
         // note
-        person[@"note"] = [self stringProperty:kABPersonNoteProperty fromContact:record];
+        if (KTSContactsManagerFieldNote & fields){
+            person[@"note"] = [self stringProperty:kABPersonNoteProperty fromContact:record];
+        }
         
         // createdAt
-        person[@"createdAt"] = [self dateProperty:kABPersonCreationDateProperty fromContact:record];
+        if (KTSContactsManagerFieldCreatedAt & fields){
+            person[@"createdAt"] = [self dateProperty:kABPersonCreationDateProperty fromContact:record];
+        }
         
         // updatedAt
-        person[@"updatedAt"] = [self stringProperty:kABPersonModificationDateProperty fromContact:record];
+        if (KTSContactsManagerFieldUpdatedAt & fields){
+            person[@"updatedAt"] = [self stringProperty:kABPersonModificationDateProperty fromContact:record];
+        }
         
         // BirthDay
-        person[@"birthday"] = [self stringProperty:kABPersonBirthdayProperty fromContact:record];
-        
-        // Phone(s)
-        ABMultiValueRef phones = ABRecordCopyValue(record, kABPersonPhoneProperty);
-        NSMutableArray *phonesArray = [[NSMutableArray alloc] init];
-        for(CFIndex j = 0; j < ABMultiValueGetCount(phones); j++)
-        {
-            NSString *phoneNumber = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(phones, j));
-            NSString *label = (__bridge NSString *)(ABMultiValueCopyLabelAtIndex(phones, j));
-            NSDictionary *phoneItem = @{
-                                        @"label" : (label != nil) ? [self getKeyFromLabel:label] : @"",
-                                        @"value" : phoneNumber
-                                        };
-            [phonesArray addObject:phoneItem];
+        if (KTSContactsManagerFieldBirthday & fields){
+            person[@"birthday"] = [self stringProperty:kABPersonBirthdayProperty fromContact:record];
         }
-        person[@"phones"] = phonesArray;
         
-        // Email(s)
-        ABMultiValueRef emails = ABRecordCopyValue(record, kABPersonEmailProperty);
-        NSMutableArray *emailsArray = [[NSMutableArray alloc] init];
-        for(CFIndex j = 0; j < ABMultiValueGetCount(emails); j++)
-        {
-            NSString *email = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(emails, j));
-            NSString *label = (__bridge NSString *)(ABMultiValueCopyLabelAtIndex(emails, j));
-            NSDictionary *emailItem = @{
-                                        @"label" : (label != nil) ? [self getKeyFromLabel:label] : @"",
-                                        @"value" : email
-                                        };
-            [emailsArray addObject:emailItem];
+        //Image
+        if (KTSContactsManagerFieldImage & fields){
+            NSData *data = CFBridgingRelease(ABPersonCopyImageData(record));
+            if (data){
+                person[@"image"] = [UIImage imageWithData:data];
+            }            
         }
-        person[@"emails"] = emailsArray;
+        
+        if (KTSContactsManagerFieldPhones & fields){
+            // Phone(s)
+            ABMultiValueRef phones = ABRecordCopyValue(record, kABPersonPhoneProperty);
+            NSMutableArray *phonesArray = [[NSMutableArray alloc] init];
+            for(CFIndex j = 0; j < ABMultiValueGetCount(phones); j++)
+            {
+                NSString *phoneNumber = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(phones, j));
+                NSString *label = (__bridge NSString *)(ABMultiValueCopyLabelAtIndex(phones, j));
+                NSDictionary *phoneItem = @{
+                                            @"label" : (label != nil) ? [self getKeyFromLabel:label] : @"",
+                                            @"value" : phoneNumber
+                                            };
+                [phonesArray addObject:phoneItem];
+            }
+            person[@"phones"] = phonesArray;
+        }
+        
+        if (KTSContactsManagerFieldEmails & fields){
+            // Email(s)
+            ABMultiValueRef emails = ABRecordCopyValue(record, kABPersonEmailProperty);
+            NSMutableArray *emailsArray = [[NSMutableArray alloc] init];
+            for(CFIndex j = 0; j < ABMultiValueGetCount(emails); j++)
+            {
+                NSString *email = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(emails, j));
+                NSString *label = (__bridge NSString *)(ABMultiValueCopyLabelAtIndex(emails, j));
+                NSDictionary *emailItem = @{
+                                            @"label" : (label != nil) ? [self getKeyFromLabel:label] : @"",
+                                            @"value" : email
+                                            };
+                [emailsArray addObject:emailItem];
+            }
+            person[@"emails"] = emailsArray;
+        }
         
         BOOL add = YES;
         
@@ -185,6 +229,12 @@
     return (companyCFObject != nil) ? (__bridge NSString *)companyCFObject : @"";
 }
 
+- (NSData *)dataProperty:(ABPropertyID)property fromContact:(ABRecordRef)person
+{
+    CFTypeRef dataCFObject = ABRecordCopyValue(person, property);
+    return dataCFObject ? (__bridge NSData *)dataCFObject : nil;
+}
+
 -(NSDate *)dateProperty:(ABPropertyID)property fromContact:(ABRecordRef)person
 {
     CFTypeRef companyCFObject = ABRecordCopyValue(person, property);
@@ -203,7 +253,7 @@
     return clearText;
 }
 
-- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL))added
+- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday image:(UIImage *)image completion:(void (^)(BOOL))added
 {
     CFErrorRef *error = nil;
     ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
@@ -224,6 +274,14 @@
         ABMultiValueAddValueAndLabel(multiEmail, (__bridge CFTypeRef)(email[@"value"]), (__bridge CFStringRef)(email[@"label"]), NULL);
         ABRecordSetValue(record, kABPersonEmailProperty, multiEmail, nil);
     }];
+
+
+    if (image){
+        NSData *imageData = UIImagePNGRepresentation(image);
+        if (imageData){
+            ABPersonSetImageData(record, (__bridge  CFTypeRef)imageData, nil);
+        }
+    }
     
     bool wasAdded = ABAddressBookAddRecord(addressBook, record, error);
     
