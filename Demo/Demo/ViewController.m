@@ -57,8 +57,8 @@
                                 lastName:@"Smith"
                                   phones:@[@{
                                                @"value":@"+7-903-469-97-48",
-                                              @"label":@"Mobile"
-                                               }]
+                                               @"label":@"Mobile"
+                                            }]
                                   emails:@[@{
                                                @"value":@"mail@mail.com",
                                                @"label": @"home e-mail"
@@ -92,7 +92,9 @@
     
     UIImageView *cellIconView = (UIImageView *)[cell.contentView viewWithTag:888];
     
-    cellIconView.image = contact[@"image"] ? : [UIImage imageNamed:@"contact_icon"];
+    UIImage *image = contact[@"image"];
+    
+    cellIconView.image = (image != nil) ? image : [UIImage imageNamed:@"contact_icon"];
     cellIconView.contentScaleFactor = UIViewContentModeScaleAspectFill;
     cellIconView.layer.cornerRadius = CGRectGetHeight(cellIconView.frame) / 2;
     
