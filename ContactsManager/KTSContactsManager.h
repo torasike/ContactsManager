@@ -66,7 +66,7 @@ typedef NS_OPTIONS(NSUInteger, KTSContactsManagerField){
 
 + (instancetype)sharedManager;
 
-- (void)importContacts:(void (^)(NSArray *contacts))contactsHandler;
+- (void)importContacts:(void (^)(NSArray *contacts, NSError *error))contactsHandler;
 //- (void)importContactsWithFields:(KTSContactsManagerField)fields contactsHandler:(void (^)(NSArray *))contactsHandler;
 - (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday image:(UIImage *)image completion:(void (^)(BOOL wasAdded))added;
 //- (void)addContactName:(NSString *)firstName lastName:(NSString *)lastName phones:(NSArray *)phonesList emails:(NSArray *)emailsList birthday:(NSDate *)birthday completion:(void (^)(BOOL wasAdded))added __attribute__((deprecated));
