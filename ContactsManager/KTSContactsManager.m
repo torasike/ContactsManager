@@ -40,11 +40,12 @@
     return self;
 }
 
-- (void)importContacts:(void (^)(NSArray *))contactsHandler
+- (void)importContacts:(void (^)(NSArray *, NSError *error))contactsHandler
 {
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied || ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusRestricted)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Address Book Access Denied" message:@"Please grant us access to your Address Book in Settings -> Privacy -> Contacts" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:@"OK", nil];
+        NSError *error = [NSError errorWithDomain:@"Address Book" code:200 userInfo:@{ NSLocalizedDescriptionKey: @"Address Book Access Denied"}];
+        contactsHandler(nil, error);
         return;
     }
     
@@ -56,7 +57,10 @@
             if (granted)
             {
                 NSMutableArray *contactsList = [(__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook) mutableCopy];
-                contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList extractOptions:KTSContactsManagerFieldAll]]);
+                contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList extractOptions:KTSContactsManagerFieldAll]], nil);
+            } else {
+                NSError *anError = (__bridge NSError *)error;
+                contactsHandler(nil, anError);
             }
         });
         return;
@@ -67,7 +71,7 @@
         CFErrorRef *error = nil;
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(nil, error);
         NSMutableArray *contactsList = [(__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBook) mutableCopy];
-        contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList extractOptions:KTSContactsManagerFieldAll]]);
+        contactsHandler([[NSArray alloc] initWithArray:[self extractContactsInDictionary:contactsList extractOptions:KTSContactsManagerFieldAll]], nil);
         return;
     }
 }
