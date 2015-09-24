@@ -45,7 +45,6 @@
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusDenied || ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusRestricted)
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Address Book Access Denied" message:@"Please grant us access to your Address Book in Settings -> Privacy -> Contacts" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:@"OK", nil];
-        [alert show];
         return;
     }
     
